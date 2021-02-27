@@ -9,7 +9,6 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
@@ -36,7 +35,6 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Map;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -44,18 +42,17 @@ import retrofit2.Response;
 import ssn.sycon.ticketing.model.BuyerDetails;
 import ssn.sycon.ticketing.model.ReferralData;
 import ssn.sycon.ticketing.service.MainRepository;
-import ssn.sycon.ticketing.utils.Constants;
 import ssn.sycon.ticketing.utils.SharedPref;
 
 public class PersonalActivity extends AppCompatActivity {
 
     ImageButton backIB;
     TextView nameTV;
-    TextView codeTV;
     TextView totalTV;
     TextView ssniteTV;
     TextView nonSsniteTV;
     TextView generalTV;
+    TextView speakerTV;
     Button logoutBT;
     private GoogleSignInClient mGoogleSignInClient;
     SwipeRefreshLayout pullToRefresh;
@@ -70,17 +67,16 @@ public class PersonalActivity extends AppCompatActivity {
 
         backIB = findViewById(R.id.backIB);
         nameTV = findViewById(R.id.nameTV);
-        codeTV = findViewById(R.id.codeTV);
         logoutBT = findViewById(R.id.logoutBT);
         totalTV = findViewById(R.id.totalTV);
         ssniteTV = findViewById(R.id.ssniteTV);
         nonSsniteTV = findViewById(R.id.nonSsniteTV);
+        speakerTV = findViewById(R.id.speakerTV);
         generalTV = findViewById(R.id.generalTV);
         pullToRefresh = findViewById(R.id.swiperfresh);
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         nameTV.setText(user.getDisplayName());
-        code = SharedPref.getString(PersonalActivity.this,"code");
-        codeTV.setText("#" + code);
+        code = SharedPref.getString(PersonalActivity.this, "code");
         createRequest();
         referralUpdate();
         pullToRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
@@ -154,7 +150,7 @@ public class PersonalActivity extends AppCompatActivity {
         reference.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                String auth =snapshot.child("id").getValue().toString();
+                String auth = snapshot.child("id").getValue().toString();
                 String eventCode = "sycon-2021-241402";
                 MainRepository.getUserDataService().user(auth, eventCode).enqueue(new Callback<String>() {
                     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
@@ -167,62 +163,74 @@ public class PersonalActivity extends AppCompatActivity {
                             try {
                                 JSONObject jsonObject = new JSONObject(userData);
                                 JSONArray jsonArray = new JSONArray((String) jsonObject.get("data"));
-                                for (Map.Entry<Integer, String> entry : Constants.referralCode.entrySet()) {
-                                    ReferralData referralData = new ReferralData();
-                                    referralData.setName(entry.getValue());
-                                    referralData.setCode(entry.getKey());
-                                    int referred = 0;
-                                    ArrayList<BuyerDetails> buyerDetailsArrayList = new ArrayList<>();
-                                    for (int i = 0; i < jsonArray.length(); i++) {
-                                        JSONObject temp = jsonArray.getJSONObject(i);
-                                        if (temp.has("customAnswer345798") && temp.get("customAnswer345798").equals(entry.getKey().toString())) {
-                                            BuyerDetails buyerDetails = new BuyerDetails();
-                                            buyerDetails.setName(temp.get("userName").toString());
-                                            buyerDetails.setTicketname(temp.get("allTicketName").toString());
-                                            buyerDetails.setPrice((Double) temp.get("ticketPrice"));
-                                            buyerDetails.setOrderId(temp.get("uniqueOrderId").toString());
-                                            buyerDetails.setEmail(temp.get("userEmailId").toString());
-                                            buyerDetailsArrayList.add(buyerDetails);
-                                            referred += 1;
-                                        }
-                                    }
-                                    referralData.setBuyerDetails(buyerDetailsArrayList);
-                                    referralData.setReferred(referred);
-                                    referralDataArrayList.add(referralData);
-                                }
-                                Collections.sort(referralDataArrayList, Collections.reverseOrder());
-                                for (ReferralData r : referralDataArrayList) {
-                                    if (r.getCode().toString().equals(code)) {
-                                        ArrayList<BuyerDetails> buyerDetailsArrayList = r.getBuyerDetails();
-                                        int size=0;
-                                        size=buyerDetailsArrayList.size();
-                                        totalTV.setText(String.valueOf(size));
-                                        int ssnite = 0, non = 0, general = 0;
-                                        for (BuyerDetails b : buyerDetailsArrayList) {
-                                            if (b.getTicketname().equals("SSNite exclusive Ticket")) {
-                                                ssnite += 1;
-                                            } else {
-                                                if (b.getTicketname().equals("Regular Ticket (other college students)")) {
-                                                    non += 1;
-                                                } else {
-                                                    if (b.getTicketname().equals("Corporate (General public)")) {
-                                                        general += 1;
-                                                    }
-                                                }
+                                int size = 0;
+                                int ssnite = 0, non = 0, general = 0,other=0;
+                                size = jsonArray.length();
+                                ReferralData referralData = new ReferralData();
+                                totalTV.setText(String.valueOf(size));
+
+                                int referred = 0;
+                                ArrayList<BuyerDetails> buyerDetailsArrayList = new ArrayList<>();
+                                for (int i = 0; i < jsonArray.length(); i++) {
+                                    JSONObject temp = jsonArray.getJSONObject(i);
+                                    referred += 1;
+                                    if (temp.get("allTicketName").toString().equals("SSNite exclusive Ticket")) {
+                                        ssnite += 1;
+                                    } else {
+                                        if (temp.get("allTicketName").toString().equals("Regular Ticket (other college students)")) {
+                                            non += 1;
+                                        } else {
+                                            if (temp.get("allTicketName").toString().equals("Corporate (General public)")) {
+                                                general += 1;
+                                            }
+                                            else{
+                                                other +=1;
                                             }
                                         }
-                                        ssniteTV.setText(String.valueOf(ssnite));
-                                        nonSsniteTV.setText(String.valueOf(non));
-                                        generalTV.setText(String.valueOf(general));
                                     }
+
                                 }
-                                pullToRefresh.setRefreshing(false);
+                                ssniteTV.setText(String.valueOf(ssnite));
+                                nonSsniteTV.setText(String.valueOf(non));
+                                generalTV.setText(String.valueOf(general));
+                                speakerTV.setText(String.valueOf(other));
+                                referralData.setBuyerDetails(buyerDetailsArrayList);
+                                referralData.setReferred(referred);
+                                referralDataArrayList.add(referralData);
+
+                                Collections.sort(referralDataArrayList, Collections.reverseOrder());
+//                                for (ReferralData r : referralDataArrayList) {
+//                                    if (r.getCode().toString().equals(code)) {
+//                                        ArrayList<BuyerDetails> buyerDetailsArrayList = r.getBuyerDetails();
+//                                        int size=0;
+//                                        size=buyerDetailsArrayList.size();
+//                                        totalTV.setText(String.valueOf(size));
+//                                        int ssnite = 0, non = 0, general = 0;
+//                                        for (BuyerDetails b : buyerDetailsArrayList) {
+//                                            if (b.getTicketname().equals("SSNite exclusive Ticket")) {
+//                                                ssnite += 1;
+//                                            } else {
+//                                                if (b.getTicketname().equals("Regular Ticket (other college students)")) {
+//                                                    non += 1;
+//                                                } else {
+//                                                    if (b.getTicketname().equals("Corporate (General public)")) {
+//                                                        general += 1;
+//                                                    }
+//                                                }
+//                                            }
+//                                        }
+//                                        ssniteTV.setText(String.valueOf(ssnite));
+//                                        nonSsniteTV.setText(String.valueOf(non));
+//                                        generalTV.setText(String.valueOf(general));
+//                                    }
+//                                }
+
                             } catch (JSONException e) {
                                 e.printStackTrace();
                                 pullToRefresh.setRefreshing(false);
                             }
                             pullToRefresh.setRefreshing(false);
-                        }else{
+                        } else {
                             AlertCustomDialogBox(PersonalActivity.this, "Error", "Something went wrong. Please try again!!");
                         }
                     }

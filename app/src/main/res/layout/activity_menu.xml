@@ -69,7 +69,7 @@
                 android:layout_height="@dimen/_100sdp"
                 android:layout_margin="@dimen/_15sdp"
                 android:layout_weight="1"
-                android:text="Personal\nSales"
+                android:text="Total\nSummary"
                 android:textSize="@dimen/_15ssp"
                 android:background="@drawable/button_theme"
                 android:drawableTop="@drawable/ic_abacus"
