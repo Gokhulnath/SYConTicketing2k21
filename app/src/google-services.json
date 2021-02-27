@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "697614648129",
+    "project_id": "sycon2k21",
+    "storage_bucket": "sycon2k21.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:697614648129:android:f3f03c74e52dd3f55957c0",
+        "android_client_info": {
+          "package_name": "ssn.sycon.ticketing"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "697614648129-j7mehdtjam1ulhlgjcfe0801cj7sdhar.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "ssn.sycon.ticketing",
+            "certificate_hash": "eb69351c5b85520848bc095e1457deeb4702cc1e"
+          }
+        },
+        {
+          "client_id": "697614648129-e3mciiiu9toatqd2t8ol9q35r1lu6br3.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBVN9VBm4KuESai4RsLN7-f0ZitgJKmPY4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "697614648129-e3mciiiu9toatqd2t8ol9q35r1lu6br3.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

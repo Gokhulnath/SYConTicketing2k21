@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MenuActivity">
+
+    <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/appBarLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:theme="@style/Theme.Ticketing.AppBarOverlay">
+
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="?attr/colorPrimary"
+            app:popupTheme="@style/Theme.Ticketing.PopupOverlay">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:orientation="horizontal">
+
+
+                <TextView
+                    android:id="@+id/toolBarTV"
+                    style="@style/TextAppearance.Widget.AppCompat.Toolbar.Title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:background="?attr/selectableItemBackground"
+                    android:text="SYCon 2k21"
+                    android:textSize="@dimen/_15ssp" />
+
+            </LinearLayout>
+        </androidx.appcompat.widget.Toolbar>
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/appBarLayout"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/overallBT"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/_100sdp"
+                android:layout_margin="@dimen/_15sdp"
+                android:layout_weight="1"
+                android:text="Overall\nSales"
+                android:textSize="@dimen/_15ssp"
+                android:background="@drawable/button_theme"
+                android:drawableTop="@drawable/ic_graph"
+                android:textColor="@color/white"
+                android:padding="@dimen/_10sdp"/>
+
+            <Button
+                android:id="@+id/personalBT"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/_100sdp"
+                android:layout_margin="@dimen/_15sdp"
+                android:layout_weight="1"
+                android:text="Personal\nSales"
+                android:textSize="@dimen/_15ssp"
+                android:background="@drawable/button_theme"
+                android:drawableTop="@drawable/ic_abacus"
+                android:textColor="@color/white"
+                android:padding="@dimen/_10sdp"/>
+
+
+        </LinearLayout>
+<!--        <TextView-->
+<!--            android:id="@+id/textview1"-->
+<!--            android:text="Single-line text view that scrolls automatically if the text is too long to fit in the widget"-->
+<!--            android:singleLine="true"-->
+<!--            android:ellipsize="marquee"-->
+<!--            android:marqueeRepeatLimit ="marquee_forever"-->
+<!--            android:focusable="true"-->
+<!--            android:focusableInTouchMode="true"-->
+<!--            android:scrollHorizontally="true"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"/>-->
+    </LinearLayout>
+
+
+</RelativeLayout>
